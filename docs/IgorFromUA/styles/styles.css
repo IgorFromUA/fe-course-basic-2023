@@ -20,6 +20,7 @@ ul, li {
 }
 
 .container {
+  display: inherit;
   max-width: 1280px;
   min-width: 400px;
   padding-left: 25px;

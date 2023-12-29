@@ -1,2 +1,2 @@
-# fe-course-basic-2023
-Репозиторій з курсу "Front-End for beginners 2023" проекту Masters Academy
+проекту створений на курсі "Front-End for beginners 2023" від Masters Academy
+https://igorfromua.github.io/fe-course-basic-2023/
