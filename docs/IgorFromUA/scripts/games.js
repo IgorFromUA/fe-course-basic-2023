@@ -183,6 +183,27 @@ function filterGames(gamesArr) {
     });
 }
 
+function saveFilter() {
+    localStorage.setItem('filters', JSON.stringify({
+        genre: document.querySelector('[data-filter-select="genre"]').value,
+        platform: document.querySelector('[data-filter-select="platform"]').value,
+        isNewGame: document.querySelector('[data-age-games="new"]').checked,
+        isOldGame: document.querySelector('[data-age-games="old"]').checked,
+        searchTerm: document.querySelector('[data-filter-search]').value,
+    }));
+}
+
+function loadFilter() {
+    const storedFilters = JSON.parse(localStorage.getItem('filters'));
+    if (storedFilters) {
+        document.querySelector('[data-filter-select="genre"]').value = storedFilters.genre;
+        document.querySelector('[data-filter-select="platform"]').value = storedFilters.platform;
+        document.querySelector('[data-age-games="new"]').checked = storedFilters.isNewGame;
+        document.querySelector('[data-age-games="old"]').checked = storedFilters.isOldGame;
+        document.querySelector('[data-filter-search]').value = storedFilters.searchTerm;
+    }
+}
+
 function markedSearchText(search, originString) {
     if (search === '') return originString;
     const regex = new RegExp(search, 'ig');
@@ -260,6 +281,8 @@ async function applyFilter(url, place) {
         renderCards(place, markedTextFilterArrGames);
     } catch (e) {
         console.log('filter error: ', e);
+    } finally {
+        saveFilter();
     }
 }
 
@@ -284,6 +307,8 @@ function attachHandlers(url, place) {
 async function init() {
     const urlGames = 'https://mmo-games.p.rapidapi.com/games';
     const CARDS_LIST = document.querySelector('[data-cards]');
+    loadFilter();
+    applyFilter(urlGames, CARDS_LIST);
     try {
         const games = await getGames(urlGames, CARDS_LIST);
         if (!Array.isArray(games)) throw new Error('is not Array');
