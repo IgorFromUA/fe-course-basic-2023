@@ -169,7 +169,15 @@ function createGameCardStr(game) {
 
 function createCardElement(game) {
     const cardElement = document.createElement('li');
+    cardElement.setAttribute('id', game.id);
     cardElement.classList.add('card');
+    cardElement.addEventListener('click', (event) => {
+        localStorage.setItem('gameId', `${event.currentTarget.id}`);
+        const currentUrl = window.location.href;
+        const endUrl = currentUrl.split('/');
+        endUrl[endUrl.length - 1] = 'game.html';
+        window.location.href = endUrl.join('/');
+    });
     cardElement.insertAdjacentHTML('afterbegin', createGameCardStr(game));
     return cardElement;
 }
@@ -250,7 +258,7 @@ function getGames(url, place) {
                 return response.json();
             }
         })
-        .then((result) => result.slice(0, 50))
+        // .then((result) => result.slice(0, 50))
         .then((result) => result.map((game) => {
             const copyGame = { ...game };
             copyGame.small_description = `${game.short_description.slice(0, 52)}...`;
@@ -271,7 +279,7 @@ async function applyFilter(url, place) {
         const games = await getGames(urlGamesQuery, place);
         if (isOldGame) games.reverse();
         const searchTerm = document.querySelector('[data-filter-search]').value;
-        const filterArrGames = filterGames(games);
+        const filterArrGames = filterGames(games.slice(0, 50));
         const markedTextFilterArrGames = filterArrGames.map((game) => {
             const copyGame = { ...game };
             copyGame.title = markedSearchText(searchTerm, game.title);
