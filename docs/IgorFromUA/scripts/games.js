@@ -172,10 +172,9 @@ function createCardElement(game) {
     cardElement.setAttribute('id', game.id);
     cardElement.classList.add('card');
     cardElement.addEventListener('click', (event) => {
-        localStorage.setItem('gameId', `${event.currentTarget.id}`);
         const currentUrl = window.location.href;
         const endUrl = currentUrl.split('/');
-        endUrl[endUrl.length - 1] = 'game.html';
+        endUrl[endUrl.length - 1] = `game.html?${event.currentTarget.id}`;
         window.location.href = endUrl.join('/');
     });
     cardElement.insertAdjacentHTML('afterbegin', createGameCardStr(game));

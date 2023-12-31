@@ -1,7 +1,11 @@
-function loadingSwitch(switching, place) {
+function loadingSwitch(switching) {
     const LOADING_ELEMENT = document.querySelector('[data-loading]');
-    if (switching && place) place.textContent = '';
     LOADING_ELEMENT.style.visibility = switching ? 'visible' : 'hidden';
+}
+
+function getGameId() {
+    const currentUrl = window.location.href;
+    return currentUrl.split('?').at(-1);
 }
 
 function getGame(id) {
@@ -29,7 +33,7 @@ function createGameCardStr(game) {
         thumbnail,
         status,
         game_url: gameUrl,
-        minimum_system_requirements: minSys,
+        minimum_system_requirements: minSys = {},
         description,
         genre,
         platform,
@@ -82,11 +86,11 @@ function createGameCardStr(game) {
                     </div>
                     <div><span class="semiBold">minimum system requirements:</span>
                         <ul class="card__actors">
-                            <li class="card__actor"><span class="semiBold">OS:</span>    ${minSys.os || '?'}</li>
-                            <li class="card__actor"><span class="semiBold">memory:</span>    ${minSys.memory || '?'}</li>
-                            <li class="card__actor"><span class="semiBold">storege:</span>    ${minSys.storege || '?'}</li>
-                            <li class="card__actor"><span class="semiBold">processor:</span>    ${minSys.processor || '?'}</li>
-                            <li class="card__actor"><span class="semiBold">graphics:</span>    ${minSys.graphics || '?'}</li>
+                            <li class="card__actor"><span class="semiBold">OS:</span>    ${minSys.os || '-'}</li>
+                            <li class="card__actor"><span class="semiBold">memory:</span>    ${minSys.memory || '-'}</li>
+                            <li class="card__actor"><span class="semiBold">storege:</span>    ${minSys.storege || '-'}</li>
+                            <li class="card__actor"><span class="semiBold">processor:</span>    ${minSys.processor || '-'}</li>
+                            <li class="card__actor"><span class="semiBold">graphics:</span>    ${minSys.graphics || '-'}</li>
                         </ul>
                     </div>
     `;
@@ -124,7 +128,7 @@ async function createCard(gameProm) {
 }
 
 function init() {
-    createCard(getGame(localStorage.getItem('gameId')));
+    createCard(getGame(getGameId()));
 }
 
 init();
