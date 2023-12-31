@@ -13,16 +13,6 @@
   align-items: flex-start;
 }
 
-/*.back-btn {*/
-/*  padding: 13px 20px;*/
-/*  font-size: 12px;*/
-/*  color: #FFF;*/
-/*  background: #EF4934;*/
-/*  border: none;*/
-/*  border-radius: 6px;*/
-/*  cursor: pointer;*/
-/*}*/
-
 .card-header__link, .back-btn {
   padding: 6px 10px;
   font-size: 12px;
@@ -48,10 +38,6 @@
   border-radius: 4px;
   object-fit: cover;
 }
-
-/*.card-content {*/
-/*  padding: 5px 10px;*/
-/*}*/
 
 .description__title {
   font-size: 24px;
@@ -168,6 +154,7 @@
   .card__actors {
     flex-direction: row;
     font-size: 16px;
+    margin-top: 8px;
   }
 
   .card__actor {
