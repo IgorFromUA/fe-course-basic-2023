@@ -279,7 +279,7 @@ async function applyFilter(url, place) {
         const games = await getGames(urlGamesQuery, place);
         if (isOldGame) games.reverse();
         const searchTerm = document.querySelector('[data-filter-search]').value;
-        const filterArrGames = filterGames(games.slice(0, 50));
+        const filterArrGames = filterGames(games);
         const markedTextFilterArrGames = filterArrGames.map((game) => {
             const copyGame = { ...game };
             copyGame.title = markedSearchText(searchTerm, game.title);

@@ -1,3 +1,9 @@
+function loadingSwitch(switching, place) {
+    const LOADING_ELEMENT = document.querySelector('[data-loading]');
+    if (switching && place) place.textContent = '';
+    LOADING_ELEMENT.style.visibility = switching ? 'visible' : 'hidden';
+}
+
 function getGame(id) {
     const url = 'https://mmo-games.p.rapidapi.com/game?id=';
     const optionsGamesUrl = {
@@ -17,24 +23,33 @@ function getGame(id) {
         });
 }
 
-const gameInfo = getGame(localStorage.getItem('gameId'));
-
 function createGameCardStr(game) {
     const {
         title,
         thumbnail,
+        status,
+        game_url: gameUrl,
+        minimum_system_requirements: minSys,
         description,
         genre,
         platform,
         publisher,
         developer,
         release_date: releaseDate,
+        screenshots,
     } = game;
-    return `        <h1 class="description__title" data-description-title>${title}</h1>
+    return `        <div class="card-header">
+                    <button class="back-btn" data-back-btn>&lt BECK</button>
+                    <h1 class="description__title" data-description-title>${title}</h1>
+                    <span class="semiBold"><a class="card-header__link" href=${gameUrl} target="_blank">Game site</a></span>
+                    </div>
                     <div class="card-section">
                         <div class="img-container">
                             <img class="card__img" data-card-img src="${thumbnail}" alt="game picture">
                             <ul class="card__actors">
+                                <li class="card__actor" data-status>
+                                    <span class="semiBold">Status:</span>    ${status}
+                                </li>
                                 <li class="card__actor" data-genre>
                                     <span class="semiBold">Genre:</span>    ${genre}
                                 </li>
@@ -52,12 +67,27 @@ function createGameCardStr(game) {
                                 </li>
                             </ul>
                         </div>
+
                         <div class="card__description">
                             <p class="description__text" data-description-text>${description}</p>
                         </div>
                     </div>
-                    <div>
+                    <div class="screenshots">
+                        ${screenshots.reduce((prev, val, indx) => `
+                            ${prev}<div class="screenshot" id="${val.id}">
+                                       <img src="${val.image}" alt="Screenshot ${indx + 1}">
+                                   </div>
+                       `, '')}
 
+                    </div>
+                    <div><span class="semiBold">minimum system requirements:</span>
+                        <ul class="card__actors">
+                            <li class="card__actor"><span class="semiBold">OS:</span>    ${minSys.os || '?'}</li>
+                            <li class="card__actor"><span class="semiBold">memory:</span>    ${minSys.memory || '?'}</li>
+                            <li class="card__actor"><span class="semiBold">storege:</span>    ${minSys.storege || '?'}</li>
+                            <li class="card__actor"><span class="semiBold">processor:</span>    ${minSys.processor || '?'}</li>
+                            <li class="card__actor"><span class="semiBold">graphics:</span>    ${minSys.graphics || '?'}</li>
+                        </ul>
                     </div>
     `;
 }
@@ -65,20 +95,36 @@ function createGameCardStr(game) {
 function createCardGame(game) {
     const cardContent = document.createElement('div');
     cardContent.classList.add('card-content');
-
     cardContent.insertAdjacentHTML('afterbegin', createGameCardStr(game));
     return cardContent;
 }
 
-async function createGameCard(gameProm) {
+function goGamesPage() {
+    const currentUrl = window.location.href;
+    const endUrl = currentUrl.split('/');
+    endUrl[endUrl.length - 1] = 'games.html';
+    window.location.href = endUrl.join('/');
+}
+
+function initBackBtn() {
+    const BACK_BTN = document.querySelector('[data-back-btn]');
+    BACK_BTN.addEventListener('click', goGamesPage);
+}
+
+async function createCard(gameProm) {
     const GAME_ELEMENT = document.querySelector('[data-game]');
+    loadingSwitch(true);
     const game = await gameProm;
     const card = document.createElement('div');
     card.classList.add('card');
-
     card.appendChild(createCardGame(game));
-
-    GAME_ELEMENT.appendChild(card);
+    loadingSwitch(false);
+    GAME_ELEMENT.insertAdjacentElement('afterbegin', card);
+    initBackBtn();
 }
 
-createGameCard(gameInfo);
+function init() {
+    createCard(getGame(localStorage.getItem('gameId')));
+}
+
+init();
